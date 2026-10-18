@@ -1,8 +1,9 @@
 /*
 Changes:
-Date         Edits
-====        ==============================================
-10/8        Created a simple demo to confirm javafx libraries are funcitonal.
+Date        Name        Edits
+====        =====       ==============================================
+10/8        Mo          Created a simple demo to confirm javafx libraries are functional.
+10/17       Mo          Adjusted to work with fitness app demo.
 
 
 */

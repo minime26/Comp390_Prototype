@@ -7,11 +7,13 @@ Date        Name        Edits
 10/10       Mo          Created class, defined compareTo method
 10/11       Mo          Added accessors/mutators
                         Added helper method to offload calculations to Calculator
+10/17       Mo          Added toString
 
 
  */
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class DailyLog implements Comparable<DailyLog> {
 
@@ -122,5 +124,30 @@ public class DailyLog implements Comparable<DailyLog> {
     }
 
 
+    //--toString for a single log
+    public String toString() {
+        String logDate = date.format(DateTimeFormatter.ofPattern("MM/dd/yy"));
+        String wgt = String.format("%.1f", weight);
+        String bmi = String.format("%.1f", this.bmi);
+        //Date: |Weight(lbs): |Steps: | Calories Intake: Workout: |Duration: |Calories Burned: |BMI:
+        StringBuilder log = new StringBuilder("Date: ").append(logDate).append(" | ");
+        log.append("Weight(lbs): ").append(wgt).append(" | ");
+        log.append("Steps: ").append(steps).append(" | ");
+        log.append("Calories Intake: ").append(calsConsumed).append(" | ");
+        //Optional fields
+        if (workout != null) {
+            int hrs = workoutDuration/60;
+            int mins = workoutDuration%60;
+            String d = String.format("%02d:%02d",hrs, mins);        //hh:mm
+
+            log.append("Workout: ").append(workout).append(" | ");
+            log.append("Duration(hh:mm): ").append(d).append(" | ");
+        }
+        //Cals burned & BMI
+        log.append("Calories Burned: ").append(calsBurned).append(" | ");
+        log.append("BMI: ").append(bmi);
+
+        return log.toString();
+    }
 
 }

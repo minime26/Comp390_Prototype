@@ -1,3 +1,5 @@
+package com.example.fitness_app_demo1;
+
 /*
 Edits:
 Date        Name        Edits
@@ -10,7 +12,7 @@ Date        Name        Edits
  */
 
 
-package com.example.fitness_app_demo1;
+
 
 public final class Calculator {
 

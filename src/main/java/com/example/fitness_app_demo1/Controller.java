@@ -1,41 +1,85 @@
 package com.example.fitness_app_demo1;
+
 /*
 Edits:
 Date        Name        Edits
 ====        ====        ========================================
 10/19       Mo          Created class, constructor takes main stage and sets scene to the the login view
+10/24       Mo          Adjusted switchTo methods to return an object of the view
+                        Added instance fields to set up triggers for login/DB
 
 
  */
 
 
+import javafx.collections.ObservableList;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
 
 public class Controller {
 
-    //Attributes
+    //Reference to the Login page on start
+    LoginView newLoginView;
+
+    //Attributes to determine active view/user
     Stage stage;                    //Main stage
     Scene scene;                    //Scene to add to
     User user;                      //Current user;
 
+    //Fields - Dashboard
+    ObservableList<DailyLog> obLogs;        //
 
 
     //Constructor - accepts the main stage and creates a loginScene
     public Controller (Stage stage) {
 
-        LoginView newLoginView = new LoginView(this);           //Create a new Login view on start
+        newLoginView = new LoginView(this);           //Create a new Login view on start
         Scene scene = new Scene(newLoginView.getRootNode());        //Add root node to Scene
         stage.setScene(scene);                                      //Sets scene to stage
+        loginListeners(newLoginView);                   //Attach listeners/triggers
 
     }
+
+//-----------Login view listeners---------------------------
+
+    public void loginListeners(LoginView view) {
+        //On reg-click -> Registration page
+        view.regB.setOnAction(e -> {
+            //Switch to a new registration page
+        } );
+
+        //On login-click -> validate username/password and view DB
+        view.loginB.setOnAction(e -> {
+            String username = view.unameField.getText();        //Get username and password
+            String pass = view.passField.getText();
+            view.clearFields();                                 //Clear previously entered fields
+            //Call methods in UserManager to verify username
+            //this.user = verified user
+            //If/oncer username verified, switch dashboard and load user info
+            DashboardView userDB = switchToDashboard();          //Switch to DB view
+            //Load DB with verified user's info
+        });
+
+    }
+
+
 
 //-----------Switch views---------------------------
-    public void switchToDashboard() {               //Switches to user Dashboard view
+    public DashboardView switchToDashboard() {               //Switches to user Dashboard view
         DashboardView userDB = new DashboardView(this);
         scene.setRoot(userDB.getRootNode());
+        return userDB;                                      //Return the Dashboard object
+    }
+
+    public LoginView switchToLogin() {                   //Switches to user login screen
+        newLoginView = new LoginView(this);
+        scene.setRoot(newLoginView.getRootNode());
+        return newLoginView;                                   //Return the loginview
     }
 
 
@@ -49,8 +93,16 @@ public class Controller {
 
 
 
+//-----Login Nodes-----------------------------------------------------------
+/*      Label username: TextField unameField
+        Label pass    :  TextField passField
+                             Button "login"   Button "Create Account"
+*/
 
 
+
+    Button loginB;
+    Button regB;
 
 
 

@@ -1,3 +1,32 @@
 Date    Comments
 ====    =============================
 10/19
+
+
+
+Main:
+Create UserManager object and pass it to Controller.
+
+
+Controller:
+Neeeded Field -
+    ObserveableList<DailyLog> obLogs
+    UserManager
+
+For listview - user Platform.runLater() -> scrollTo(last_index) to show latest logs
+
+
+Methods -
+    showAlert(int, msg)             //Create alert (confirmation/error/info)
+
+
+
+
+
+
+
+
+Reg page:
+Use gridpane for the form
+wrap it in a scrollpane to allow scrolling
+set scrollpane to fit to width

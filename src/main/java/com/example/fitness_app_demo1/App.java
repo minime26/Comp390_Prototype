@@ -179,9 +179,9 @@ public class App {
 
         //--------Add to mainpane and scene
         splitPane.getItems().addAll(leftBox,rightBox);          //Add both vbox to splitpane
-        splitPane.setDividerPositions(0.4);                     //Divide 40/60
-        mainpane.setCenter(splitPane);                          //Add splitpane to center of mainpain
-        this.profileScene = new Scene(mainpane, 1000, 800);        //Add pane to login scene
+        **splitPane.setDividerPositions(0.4);                     //Divide 40/60
+        *mainpane.setCenter(splitPane);                          //Add splitpane to center of mainpain
+        *this.profileScene = new Scene(mainpane, 1000, 800);        //Add pane to login scene
     }
 //--------------------------------Helper Methods----------------------------------------------
     public Scene getScene() {return this.loginScene; };

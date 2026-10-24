@@ -31,7 +31,8 @@ public class Main extends Application {
     public void start(Stage stage) throws IOException {
         stage.setTitle("Fitness Tracker");
 
-        Controller mainController = new Controller(stage);       //Create new app object, passing in the stage
+        //Create new UserManager object and pass to Controller
+        Controller mainController = new Controller(stage );       //Create new app object, passing in the stage
 
         stage.show();
     }

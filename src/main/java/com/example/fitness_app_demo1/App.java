@@ -1,4 +1,8 @@
 /*
+
+package com.example.fitness_app_demo1;
+
+/*
 Edits:
 Date        Name        Edits
 ====        ====        ========================================
@@ -7,8 +11,8 @@ Date        Name        Edits
                         Added logout option and formatting/alignments of UI elements.
  */
 
-package com.example.fitness_app_demo1;
 
+/*
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableArray;
@@ -225,3 +229,8 @@ public class App {
 
 
 }
+
+
+
+
+ */

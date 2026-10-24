@@ -37,8 +37,10 @@ public class LoginView {
     public LoginView(Controller c) {
         this.c = c;
         root.setStyle("-fx-border-color: #252525;" + "-fx-border-radius: 10;" +
-                "-fx-background-color: gray;" + "-fx-background-radius: 10;");
+                "-fx-background-color: #f1eeee;" + "-fx-background-radius: 10;");
         root.setAlignment(Pos.CENTER);
+        buildLoginView();
+
     }
 
     public void buildLoginView() {
@@ -69,12 +71,12 @@ public class LoginView {
         loginB = new Button("Login");
         loginB.setStyle("-fx-border-radius: 15;" +"-fx-background-radius: 15;" + "-fx-font: 14;" +
                 "-fx-font-family: 'Segoe UI', 'Arial';" + "-fx-font-weight: 600;" + "-fx-padding: 6 12");
-            regB = new Button("Create Account");
+        regB = new Button("Create Account");
         regB.setStyle("-fx-border-radius: 15;" +"-fx-background-radius: 15;" + "-fx-font: 14;" +
                 "-fx-font-family: 'Segoe UI', 'Arial';" + "-fx-font-weight: 600;" + "-fx-padding: 6 12");
 
         h.getChildren().addAll(loginB, regB);           //Add buttons to hbox
-        root.add(h,0,2);
+        root.add(h,1,2);
 
     }
 
@@ -93,6 +95,11 @@ public class LoginView {
 
     public Button getLoginButton(){ return this.loginB; }
     public  Button getRegButton() { return this.regB; }
+
+
+
+
+//--------------------------------Helper Methods----------------------------------------------
 
 
 

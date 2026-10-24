@@ -62,6 +62,9 @@ public class DashboardView {
     //left bar of splitpane
     public Label getProfileLl() { return this.profile; }
 
+    //Right box of splitpane
+    public ListView<DailyLog> getListView() { return this.list;}
+
 
     //Create topbar - Profile: "username"       Logout
     public void buildTopBar() {
@@ -82,6 +85,7 @@ public class DashboardView {
         logoutB.setStyle("-fx-border-color: #746f6f;" + "-fx-background-radius: 10;" +
                 "-fx-background-radius: 10;");          //Rounded corners
 
+        tbar.getChildren().addAll(usernameTl,spacer,logoutB);       //Add elements to top bar
         root.setTop(tbar);          //Set top bar on the top of borderpane
     }
 
@@ -115,7 +119,8 @@ public class DashboardView {
         list.setStyle("-fx-font-size: 12;" + "-fx-font-family: 'Segoe UI', 'Arial';" +
                 "-fx-font-weight: normal;");
         rightBox.getChildren().addAll(logTitle, list);      //Add logTitle and listview to right box
-        VBox.setVgrow(rightBox, Priority.ALWAYS);       //Fill vertically
+        list.setMaxHeight(Double.MAX_VALUE);
+        VBox.setVgrow(list, Priority.ALWAYS);       //Fill vertically
 
         splitPane.getItems().addAll(leftBox, rightBox);       //Add left and right box to splitpane
 

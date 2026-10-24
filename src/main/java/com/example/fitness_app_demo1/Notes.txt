@@ -10,6 +10,7 @@ Create UserManager object and pass it to Controller.
 
 Controller:
 Neeeded Field -
+    User currUser       //Logged in user
     ObserveableList<DailyLog> obLogs
     UserManager
 
@@ -18,8 +19,12 @@ For listview - user Platform.runLater() -> scrollTo(last_index) to show latest l
 
 Methods -
     showAlert(int, msg)             //Create alert (confirmation/error/info)
+    void handleEditLog(index, DailyLog)
+    void handleAddLog(DailyLog)
+    updateLogs()        //Updates the User log and sets the Observeable list
+    updateLogs(index)    //Updates a log in the specific index
 
-
+//Make date immutable for edits, mutable for only for adding logs
 
 
 

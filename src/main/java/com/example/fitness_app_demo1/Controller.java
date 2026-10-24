@@ -12,19 +12,24 @@ Date        Name        Edits
  */
 
 
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
+import java.util.Collections;
 
 public class Controller {
 
-    //Reference to the Login page on start
-    LoginView newLoginView;
+    //Reference to different screens
+    LoginView loginView;
+    DashboardView dbView;
 
     //Attributes to determine active view/user
     Stage stage;                    //Main stage
@@ -32,36 +37,47 @@ public class Controller {
     User user;                      //Current user;
 
     //Fields - Dashboard
-    ObservableList<DailyLog> obLogs;        //
+    ObservableList<DailyLog> obLogs = FXCollections.observableArrayList();
 
 
     //Constructor - accepts the main stage and creates a loginScene
     public Controller (Stage stage) {
 
-        newLoginView = new LoginView(this);           //Create a new Login view on start
-        Scene scene = new Scene(newLoginView.getRootNode());        //Add root node to Scene
+        loginView = new LoginView(this);           //Create a new Login view on start
+        scene = new Scene(loginView.getRootNode(),1000,800);        //Add root node to Scene
         stage.setScene(scene);                                      //Sets scene to stage
-        loginListeners(newLoginView);                   //Attach listeners/triggers
-
+        loginListeners(loginView);                   //Attach listeners/triggers
+        Platform.runLater(() -> loginView.getRootNode().requestFocus());    //Retain focus on root pane
     }
 
 //-----------Login view listeners---------------------------
-
+//-----Login Nodes-----------------------------------------------------------
+/*      Label username: TextField unameField
+        Label pass    :  TextField passField
+                             Button "login"   Button "Create Account"
+*/
     public void loginListeners(LoginView view) {
         //On reg-click -> Registration page
+        /*
         view.regB.setOnAction(e -> {
             //Switch to a new registration page
         } );
+        */
 
         //On login-click -> validate username/password and view DB
         view.loginB.setOnAction(e -> {
             String username = view.unameField.getText();        //Get username and password
-            String pass = view.passField.getText();
+            //String pass = view.passField.getText();
             view.clearFields();                                 //Clear previously entered fields
             //Call methods in UserManager to verify username
             //this.user = verified user
             //If/oncer username verified, switch dashboard and load user info
-            DashboardView userDB = switchToDashboard();          //Switch to DB view
+
+            user = preload(username);           //===Preload user for **testing**
+            //Login to user dashboard
+            switchToDashboard();          //Switch to DB view
+
+
             //Load DB with verified user's info
         });
 
@@ -71,15 +87,18 @@ public class Controller {
 
 //-----------Switch views---------------------------
     public DashboardView switchToDashboard() {               //Switches to user Dashboard view
-        DashboardView userDB = new DashboardView(this);
-        scene.setRoot(userDB.getRootNode());
-        return userDB;                                      //Return the Dashboard object
+        dbView = new DashboardView(this);
+        dbView.getListView().setItems(obLogs);              //Connect obLogs to list view
+        updateLogs();                                     //Load Obserablelist with user logs
+        dbView.getProfileLl().setText(user.toString());     //Load left box with user data
+        scene.setRoot(dbView.getRootNode());                //set Scene to dashboard view
+        return dbView;                                      //Return the Dashboard object
     }
 
     public LoginView switchToLogin() {                   //Switches to user login screen
-        newLoginView = new LoginView(this);
-        scene.setRoot(newLoginView.getRootNode());
-        return newLoginView;                                   //Return the loginview
+        loginView = new LoginView(this);
+        scene.setRoot(loginView.getRootNode());
+        return loginView;                                   //Return the loginview
     }
 
 
@@ -93,18 +112,27 @@ public class Controller {
 
 
 
-//-----Login Nodes-----------------------------------------------------------
-/*      Label username: TextField unameField
-        Label pass    :  TextField passField
-                             Button "login"   Button "Create Account"
-*/
 
+//-----------Helper Methods----------------------------------------------------
 
+    //Dashboard
+    public void setUIlogs() {       //Updates ObserveableList with current user logs
+        obLogs.setAll(user.getLogs());                  //Arraylist -> ObservableArrayList
+    }
 
-    Button loginB;
-    Button regB;
+    public void updateLogs() {
+        if (user == null) {        //Check if user is null, clear logs
+            obLogs.clear();
+            return;
+        }
+        ListView<DailyLog> view = dbView.getListView();
 
+        setUIlogs();            //Update Observable list
 
+        int last = obLogs.size() - 1;       //Show latest logs
+        if (last >= 0)
+            Platform.runLater(() -> view.scrollTo(last));       //Run after UI loads
+    }
 
 
 

@@ -12,7 +12,8 @@ Date        Name        Edits
  */
 
 
-
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public final class Calculator {
 
@@ -113,6 +114,20 @@ public final class Calculator {
         }
         //cals burned from steps only
         return calcCalsBurned(log.getSteps(), log.getWeight());
+    }
+
+    //-----Return localdate using ints or strings
+    public static LocalDate toLocalDate(int mo, int dd, int yyyy) {
+        LocalDate date = LocalDate.of(yyyy, mo, dd);
+        return date;
+    }
+    public static LocalDate toLocalDate(String mo, String dd, String yyyy) {
+        int m = Integer.parseInt(mo.trim());
+        int d = Integer.parseInt(dd.trim());
+        int y = Integer.parseInt(yyyy.trim());
+        String sDate = String.format("%02d/%02d/%04d",m, d, y);
+        return toLocalDate(m, d, y);
+
     }
 
 

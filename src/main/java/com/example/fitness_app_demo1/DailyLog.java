@@ -98,6 +98,7 @@ public class DailyLog implements Comparable<DailyLog> {
         this.bmi = bmi;
     }
 
+
 //------------------Getters------------------------------------------------------------------------
 
     public User getUser() {return user; }

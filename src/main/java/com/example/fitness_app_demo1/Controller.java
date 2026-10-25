@@ -8,7 +8,7 @@ Date        Name        Edits
 10/24       Mo          Adjusted switchTo methods to return an object of the view
                         Added instance fields to set up triggers for login/DB
 10/25       Mo          Added listers/triggers for logout and to retain focus on root pane when user clicks away.
-
+10/25       Mo          Added second constructor to accept a UserManager
 
  */
 
@@ -25,8 +25,11 @@ import java.time.LocalDate;
 public class Controller {
 
     //Reference to different screens
+    private final UserManager manager;
+
     LoginView loginView;
     DashboardView dbView;
+
 
     //Attributes to determine active view/user
     Stage stage;                    //Main stage
@@ -45,7 +48,20 @@ public class Controller {
         stage.setScene(scene);                                      //Sets scene to stage
         loginListeners(loginView);                   //Attach listeners/triggers
         Platform.runLater(() -> loginView.getRootNode().requestFocus());    //Retain focus on root pane
+        manager = new UserManager();
     }
+
+    //Constructor - accepts the main stage and manager
+    public Controller (Stage stage, UserManager m) {
+
+        loginView = new LoginView(this);           //Create a new Login view on start
+        scene = new Scene(loginView.getRootNode(),1000,800);        //Add root node to Scene
+        stage.setScene(scene);                                      //Sets scene to stage
+        loginListeners(loginView);                   //Attach listeners/triggers
+        Platform.runLater(() -> loginView.getRootNode().requestFocus());    //Retain focus on root pane
+        this.manager = m;
+    }
+
 
 //-----------Login view listeners---------------------------
 //-----Login Nodes-----------------------------------------------------------

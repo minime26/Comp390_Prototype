@@ -24,21 +24,21 @@ public class userMap {      // *** only going to create ONE instance, use across
                         "male", 86.5, 165.0, 145.0);
 
 // --------------------constructor---------------------------
-    public userMap(User user)
+    public userMap()    
+    {
+        // overloaded constructor, creates empty usersList (map)
+        Map<String,User> usersList = new HashMap<String, User>();
+    }
+
+    public userMap(String userName, User user)
     {
         // needs to CREATE user map
         // take in user obj
 
         // setter methods called here
 
-        addUser(user);
+        addUser(userName, user);
        
-    }
-
-    public userMap()    
-    {
-        // overloaded constructor, creates empty usersList (map)
-        Map<String,User> usersList = new HashMap<String, User>();
     }
 
 //----------------------- setters-----------------------------
@@ -51,13 +51,11 @@ public class userMap {      // *** only going to create ONE instance, use across
         
     }
 
-    public void addUser(User user)
+    public void addUser(String userName, User user)
     {      
         // adds user paired to map <str username, user user>
         // possible to add user (val) w/o accompanying username (key) but cant see a reason to
         // ie)  usersList.put(null, user);
-    
-        String userName = user.getUserName();
 
         // need way to handle duplicates -- shouldnt allow two profiles w/ same username
         try{
@@ -72,7 +70,7 @@ public class userMap {      // *** only going to create ONE instance, use across
     {
         String userName = user.getUserName();
 
-        User oldUser = getUser(userName);
+        User oldUser = getUserData(userName);
 
         usersList.replace(userName, oldUser, user);
     }
@@ -83,8 +81,8 @@ public class userMap {      // *** only going to create ONE instance, use across
         String userName = user.getUserName();   // inherited/overloaded from User class
         return userName;
     }
-    public User getUser(String userName){
-        // return user data (user obj) based on username arg
+    public User getUserData(String userName){
+        // return user data (as user obj / value) based on username arg/key
         // manage exception if no user available to get - WIP
 
         User userProfile = usersList.get(userName);
@@ -95,8 +93,17 @@ public class userMap {      // *** only going to create ONE instance, use across
         
     }
     // get list of ALL user profiles (testing purpose only)
-    public Map<String,User> getUsersData(Map<String,User> usersList){ 
-        // for item in userslist, print item (?) WIP
+    public List<String> getListOfUsers(Map<String,User> usersList){ 
+        // return list of usernames in userslist
+        ArrayList<String> userName_list;
+
+        for (String userName : usersList.keySet())
+        {
+            userName_list.add(userName);
+        }
+    }
+    public Map<String,User> getUsersMap()
+    {
         return this.usersList;
     }
 // ------------------------ "if username/user exists" methods ---------------------------

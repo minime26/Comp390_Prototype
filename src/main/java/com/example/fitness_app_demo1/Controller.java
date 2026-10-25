@@ -7,6 +7,7 @@ Date        Name        Edits
 10/19       Mo          Created class, constructor takes main stage and sets scene to the the login view
 10/24       Mo          Adjusted switchTo methods to return an object of the view
                         Added instance fields to set up triggers for login/DB
+10/25       Mo          Added listers/triggers for logout and to retain focus on root pane when user clicks away.
 
 
  */
@@ -16,14 +17,10 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
-import java.util.Collections;
 
 public class Controller {
 
@@ -66,39 +63,57 @@ public class Controller {
 
         //On login-click -> validate username/password and view DB
         view.loginB.setOnAction(e -> {
-            String username = view.unameField.getText();        //Get username and password
-            //String pass = view.passField.getText();
-            view.clearFields();                                 //Clear previously entered fields
-            //Call methods in UserManager to verify username
-            //this.user = verified user
-            //If/oncer username verified, switch dashboard and load user info
+                String username = view.unameField.getText();        //Get username and password
+                //String pass = view.passField.getText();
+                view.clearFields();                                 //Clear previously entered fields
+                //Call methods in UserManager to verify username
+                //this.user = verified user
+                //If/oncer username verified, switch dashboard and load user info
 
-            user = preload(username);           //===Preload user for **testing**
-            //Login to user dashboard
-            switchToDashboard();          //Switch to DB view
+                user = preload(username);           //===Preload user for **testing**
+                //Login to user dashboard
+                switchToDashboard();          //Switch to DB view and load user info
 
-
-            //Load DB with verified user's info
         });
 
+        view.getRootNode().setOnMouseClicked( e -> {
+            loginView.getRootNode().requestFocus();
+        });
+
+
+    }
+
+    //------Dashboard Listeners--------------------
+    public void dbListeners() {
+        //Configure logout button
+        dbView.getLogoutTb().setOnAction(e -> {
+            logOut();           //Reset DB and user reference, switch to login view
+        });
+
+        dbView.getRootNode().setOnMouseClicked( e -> {
+            dbView.getRootNode().requestFocus();
+        });
     }
 
 
 
 //-----------Switch views---------------------------
-    public DashboardView switchToDashboard() {               //Switches to user Dashboard view
+    public void switchToDashboard() {               //Switches to user Dashboard view
         dbView = new DashboardView(this);
         dbView.getListView().setItems(obLogs);              //Connect obLogs to list view
         updateLogs();                                     //Load Obserablelist with user logs
         dbView.getProfileLl().setText(user.toString());     //Load left box with user data
+        dbView.getUsernameTl().setText(user.getUserName());  //Display username in top left
         scene.setRoot(dbView.getRootNode());                //set Scene to dashboard view
-        return dbView;                                      //Return the Dashboard object
+        dbListeners();                                      //Set up listeners/triggers
+        Platform.runLater(() -> dbView.getRootNode().requestFocus());    //Retain focus on root pane
     }
 
-    public LoginView switchToLogin() {                   //Switches to user login screen
+    public void switchToLogin() {                   //Switches to user login screen
         loginView = new LoginView(this);
         scene.setRoot(loginView.getRootNode());
-        return loginView;                                   //Return the loginview
+        loginListeners(loginView);                   //Attach listeners/triggers
+        Platform.runLater(() -> loginView.getRootNode().requestFocus());    //Retain focus on root pane
     }
 
 
@@ -132,6 +147,13 @@ public class Controller {
         int last = obLogs.size() - 1;       //Show latest logs
         if (last >= 0)
             Platform.runLater(() -> view.scrollTo(last));       //Run after UI loads
+    }
+
+    public void logOut() {
+        user = null;                    //Set user to null
+        switchToLogin();
+        updateLogs();                   //Clear obLogs
+        dbView = null;                  //Reset DB
     }
 
 

@@ -13,6 +13,7 @@ Date        Name        Edits
 10/10       Mo          Added core structure - getters/setters, helper methods
 10/12       Mo          Added methods to get first/last log and progress dynamically
 10/17       Mo          Added toString
+10/25       Mo          Added password field and getters/setters for it
 
 
  */
@@ -24,6 +25,7 @@ public class User {
     private final LocalDate regDate;
 
     //Attributes - mutable
+    private String pass;
     private String fName;                       //First name
     private String lName;                       //Last name
     private int age;
@@ -56,9 +58,15 @@ public class User {
     }
 //---------------------------Setters-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
+    public void setPassword(String p) {
+        //Restrict password to letters, #s and certain special chars
+        if (p == null || !p.matches("[a-zA-Z0-9.!@#$*]{8,20}"))
+            throw new IllegalArgumentException("Invalid password format.");
+        this.pass = p;
 
+    }
     public void setGender(String gender) {        //Gender name
-        if(gender == null || !List.of("male", "female", "prefer not to answer").contains(gender.toLowerCase()))
+        if(gender == null || !List.of("male", "female", "prefer not to answer").contains(gender.toLowerCase().trim()))
             throw new IllegalArgumentException("Invalid gender option.");                       //Throw exception if selection is out of scope.
         this.gender = gender;
     }
@@ -109,6 +117,7 @@ public class User {
 //---------------------------Getters-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
     public String getUserName() {return this.userName; }
+    public String getPassword() {return this.pass; }
     public LocalDate getRegDate() {return this.regDate; };
 
     public String fName() {return this.fName; }

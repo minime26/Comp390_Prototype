@@ -8,6 +8,7 @@ Date        Name        Edits
 10/11       Mo          Added accessors/mutators
                         Added helper method to offload calculations to Calculator
 10/17       Mo          Added toString
+10/25       Mo          Added logic to generate a unique ID
 
 
  */
@@ -20,6 +21,7 @@ public class DailyLog implements Comparable<DailyLog> {
     public enum Activity {CARDIO, CYCLING, WEIGHTS}
     //---------------Attributes of a log--------------------
     private final User user;
+    private final int logId;
 
     private LocalDate date;
     private double weight;          //lbs
@@ -47,6 +49,7 @@ public class DailyLog implements Comparable<DailyLog> {
         setActivity(workout); setWoDuration(woDuration);
         //Calculate BMI and calsBurned with given data.
         reCal();
+        logId = Calculator.generateLogId();      //Generate a unique ID for the log
     }
     //----------Secondary Constructor - sets optional fields to null
     public DailyLog(User user, LocalDate date, double weight, int steps,

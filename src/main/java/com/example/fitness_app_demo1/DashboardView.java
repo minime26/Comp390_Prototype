@@ -5,7 +5,8 @@ Edits:
 Date        Name        Edits
 ====        ====        ========================================
 10/21       Mo          Created class
-10/24        Mo          Added basic UI additions to show User data/logs
+10/24       Mo          Added basic UI additions to show User data/logs
+10/25       Mo          Cosmetic adjustments to UI
 
 
  */
@@ -18,6 +19,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 
 public class DashboardView {
@@ -62,6 +64,9 @@ public class DashboardView {
     //left bar of splitpane
     public Label getProfileLl() { return this.profile; }
 
+    //Right box of splitpane
+    public ListView<DailyLog> getListView() { return this.list;}
+
 
     //Create topbar - Profile: "username"       Logout
     public void buildTopBar() {
@@ -76,12 +81,13 @@ public class DashboardView {
         HBox.setHgrow(spacer, Priority.ALWAYS);             //Consume leftover space in the middle
         //Set label = username
         usernameTl = new Label();                           //Profile: "username"
-        usernameTl.setFont(Font.font("System", FontWeight.EXTRA_BOLD, 20));
+        usernameTl.setFont(Font.font("System",FontWeight.SEMI_BOLD, FontPosture.ITALIC, 20));
         //Logout button
         logoutB = new Button("Logout");
         logoutB.setStyle("-fx-border-color: #746f6f;" + "-fx-background-radius: 10;" +
-                "-fx-background-radius: 10;");          //Rounded corners
+                "-fx-border-radius: 10;");          //Rounded corners
 
+        tbar.getChildren().addAll(usernameTl,spacer,logoutB);       //Add elements to top bar
         root.setTop(tbar);          //Set top bar on the top of borderpane
     }
 
@@ -89,35 +95,53 @@ public class DashboardView {
     public void buildCenterPane() {
         //Vbox in splitpane to hold Profile info - leftbox
         VBox leftBox = new VBox(10);
-        leftBox.setPadding(new Insets(10));
+        leftBox.setPadding(new Insets(0,0,5,0));
         leftBox.setAlignment(Pos.TOP_LEFT);
 
+        //Account header
         Label lprofile = new Label("Account");
-        lprofile.setStyle("-fx-font-size: 18;" + "-fx-font-family: 'Segoe UI', 'Arial';" +
-                        "-fx-font-weight: normal;");
+        lprofile.setStyle("-fx-font-size: 16;" + "-fx-font-family: 'Segoe UI', 'Arial';" + "-fx-underline: false;" +
+                        "-fx-font-weight: bold;" + "-fx-border-color: #cfc4c4;" + "-fx-background-color: transparent;" +
+                        "-fx-border-radius: 15;" + "-fx-background-radius: 15;" + "-fx-padding: 5;");
+
+        HBox leftSplitTop = new HBox(10);
+        leftSplitTop.setMaxWidth(Double.MAX_VALUE);
+        leftSplitTop.setStyle("-fx-padding: 0 0 5 0;" + "-fx-background-color: #c3b7b7;" + "-fx-alignment: center");
+        leftSplitTop.getChildren().add(lprofile);           //Add account label to hbox
+
         profile = new Label();        //User info will be loaded into this label
         profile.setStyle("-fx-font-size: 18;" + "-fx-font-family: 'Segoe UI', 'Arial';" +
                 "-fx-font-weight: normal;");
+        profile.setAlignment(Pos.CENTER);
 
-        leftBox.getChildren().addAll(lprofile, profile);       //Add the labels to the leftbox
-        VBox.setVgrow(leftBox, Priority.ALWAYS);            //Fill vertically
-
+        leftBox.getChildren().addAll(leftSplitTop, profile);       //Add the hbox and profile to the leftbox
 
         //Vbox in splipane to hold logs - rightbar
         VBox rightBox = new VBox(10);
-        rightBox.setPadding(new Insets(10));
+        rightBox.setPadding(new Insets(0,0, 5, 0));
         rightBox.setAlignment(Pos.TOP_LEFT);
 
-        //Add ListView to hold logs
-        Label logTitle = new Label("User Logs...");     //title for rightbox
 
+        Label logTitle = new Label("User Logs...");     //title for rightbox
+        logTitle.setStyle("-fx-font-size: 16;" + "-fx-font-family: 'Segoe UI', 'Arial';" + "-fx-underline: false;" +
+                "-fx-font-weight: bold;" + "-fx-border-color: #cfc4c4;" + "-fx-background-color: transparent;" +
+                "-fx-border-radius: 15;" + "-fx-background-radius: 15;" + "-fx-padding: 5;");
+        HBox rightSplitTop = new HBox();
+        leftSplitTop.setMaxWidth(Double.MAX_VALUE);
+        rightSplitTop.setStyle("-fx-padding: 0 0 5 0;" + "-fx-background-color: #c3b7b7;" + "-fx-alignment: center");
+        rightSplitTop.getChildren().add(logTitle);           //Add log title to hbox
+
+
+        //Add ListView to hold logs
         list = new ListView<>();        //Instantiate listview
-        list.setStyle("-fx-font-size: 12;" + "-fx-font-family: 'Segoe UI', 'Arial';" +
+        list.setStyle("-fx-font-size: 14;" + "-fx-font-family: 'Segoe UI', 'Arial';" +
                 "-fx-font-weight: normal;");
-        rightBox.getChildren().addAll(logTitle, list);      //Add logTitle and listview to right box
-        VBox.setVgrow(rightBox, Priority.ALWAYS);       //Fill vertically
+        rightBox.getChildren().addAll(rightSplitTop, list);      //Add logTitle and listview to right box
+        list.setMaxHeight(Double.MAX_VALUE);
+        VBox.setVgrow(list, Priority.ALWAYS);       //Fill vertically
 
         splitPane.getItems().addAll(leftBox, rightBox);       //Add left and right box to splitpane
+        splitPane.setStyle("-fx-background-color: #f1eeee;");
 
     }
 

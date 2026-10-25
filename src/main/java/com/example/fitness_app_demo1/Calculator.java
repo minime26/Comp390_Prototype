@@ -7,7 +7,7 @@ Date        Name        Edits
 10/11       Mo          Created class.
                         Added calsBurned overloaded methods and delegation method using log instance.
 10/12       Mo          Added method to calculate current progress.
-
+10/25       Mo          Added instance static method and utility to generate unique log IDs
 
  */
 
@@ -16,9 +16,17 @@ Date        Name        Edits
 
 public final class Calculator {
 
+    private static int logId = 1;
+
     private Calculator() {}             //Avoid instantiation, Calculator object not needed
 
     //-------------------Utilites--------------calc = shortened calculate----------------------------
+
+    //Return the current unique ID to an added DailyLog and increment for the next cycle
+    public static int generateLogId() {
+        return logId++;
+    }
+
     //BMI = (lbs*703) / inches(height)^2
     public static double calcBmi(double weight, double height) {
         if (height < 1) throw new IllegalArgumentException("Invalid height.");

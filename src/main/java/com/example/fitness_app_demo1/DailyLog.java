@@ -102,6 +102,7 @@ public class DailyLog implements Comparable<DailyLog> {
 //------------------Getters------------------------------------------------------------------------
 
     public User getUser() {return user; }
+    public int getLogId() {return this.logId; }
     public LocalDate getDate() {return date; }
 
     public double getWeight() {return weight; }

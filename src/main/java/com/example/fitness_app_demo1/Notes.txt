@@ -45,6 +45,7 @@ UserMap userMap = new UserMap();          //Map to hold <key=username, value=Use
 
 //------Methods
 isCurrentUser(String username): boolean        //Returns true if user exists
+isCurrentUser(User user): boolean
 isPassMatch(String enteredPass, User): boolean  //Checks entered vs stored
 authenticate(String username, String pass): User    //Returns user if authenticated
 
@@ -54,6 +55,7 @@ getLogs(user, LocalDate): ArrayList<DailyLog>  /Get logs for that specific date
 getLogs(user): ArrayList<DailyLog>          //Get all logs for given user
 
 addUser(User user): boolean                //Add a new user to the map
+addUser(String username): boolean
 addLog(User, DailyLog): boolean             //Add a log for user
 
 deleteUser(String username): boolean       //Deletes user mapped to the username

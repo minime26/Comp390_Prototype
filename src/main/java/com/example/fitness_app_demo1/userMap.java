@@ -1,12 +1,15 @@
 /*
 
 Edits:
+
 Date        Name        Edits
 ====        ====        =====
 10/15       James       Created userMap class, added fields, get/set methods
 10/20       James       Modified constructor to take User obj as parameter, removed unnecessary
                         /redundant variables/methods
 10/21       James       Added methods getUser(), getuserName(), addUserName(), updateUserdata()
+10/26       James       Modified constructors, added exception management for getter/setter methods,
+                        started ...
 
 */
 
@@ -14,7 +17,7 @@ package com.example.sprint_1;
 import java.util.*;
 
 // need to create, hold map + methods to access, add, delete
-public class userMap {      // *** only going to create ONE instance, use across entire app
+public class UserMap {      // *** only going to create ONE instance, use across entire app
 // ----------------- fields --------------------------------
     
     private Map<String,User> usersList;   // map holds data for all users
@@ -24,16 +27,23 @@ public class userMap {      // *** only going to create ONE instance, use across
                         "male", 86.5, 165.0, 145.0);
 
 // --------------------constructor---------------------------
-    public userMap()    
+
+    public UserMap()   // think of when this constructor is called (what condiitons), what 
+                       // should it do? 
     {
         // overloaded constructor, creates empty usersList (map)
+        // ***change this part:
         Map<String,User> usersList = new HashMap<String, User>();
     }
 
-    public userMap(String userName, User user)
+    public UserMap(String userName, User user)
     {
         // needs to CREATE user map
         // take in user obj
+        userName = userName.trim().toLowerCase();   // dont think this applies to every other
+                                                    // time username used in this class
+
+        Map<String,User> usersList = new HashMap<String, User>();
 
         // setter methods called here
 
@@ -45,6 +55,8 @@ public class userMap {      // *** only going to create ONE instance, use across
     public void addUserName(String userName)    
     {
         // adds mapping for username w/ blank/none user val (like a blank/empty profile)
+        userName = userName.trim().toLowerCase(); 
+
         try{
             usersList.put(userName, null);
         } catch (Exception e) {System.out.println("That username is already taken");}
@@ -56,8 +68,8 @@ public class userMap {      // *** only going to create ONE instance, use across
         // adds user paired to map <str username, user user>
         // possible to add user (val) w/o accompanying username (key) but cant see a reason to
         // ie)  usersList.put(null, user);
-
-        // need way to handle duplicates -- shouldnt allow two profiles w/ same username
+        userName = userName.trim().toLowerCase(); 
+        
         try{
             usersList.put(userName, user);
         } catch (Exception e) {System.out.println("That username is already taken");}
@@ -69,6 +81,7 @@ public class userMap {      // *** only going to create ONE instance, use across
     public void updateUserdata(User user)
     {
         String userName = user.getUserName();
+        userName = userName.trim().toLowerCase(); 
 
         User oldUser = getUserData(userName);
 
@@ -79,15 +92,19 @@ public class userMap {      // *** only going to create ONE instance, use across
     public String getUserName(User user){   // ****needs to be changed
         // use overloaded method to get username from user obj, OR use Un to return user obj
         String userName = user.getUserName();   // inherited/overloaded from User class
+        userName = userName.trim().toLowerCase(); 
+
         return userName;
     }
     public User getUserData(String userName){
         // return user data (as user obj / value) based on username arg/key
-        // manage exception if no user available to get - WIP
+
+        userName = userName.trim().toLowerCase(); 
 
         User userProfile = usersList.get(userName);
 
-        if(userProfile == null) {System.out.println("No user associated with that username");}
+        /// changed to return exception
+        if(userProfile == null) {throw new Exception("No user associated with that username");}
 
         return userProfile;
         
@@ -96,20 +113,38 @@ public class userMap {      // *** only going to create ONE instance, use across
     public List<String> getListOfUsers(Map<String,User> usersList){ 
         // return list of usernames in userslist
         ArrayList<String> userName_list;
+        
 
-        for (String userName : usersList.keySet())
+        if (usersList.keySet() == null)
         {
-            userName_list.add(userName);
+            throw new Exception("There are no registered users");
+        }
+        else    // might not need this 'else' block
+        {
+            for (String userName : usersList.keySet())
+            {
+                // theres an easier way to do this, look into later
+                userName_list.add(userName);
+            }
+
+            return userName_list;
         }
     }
     public Map<String,User> getUsersMap()
     {
+        // exception if userslist empty/null value?
+        if (usersList == null)
+        {
+            throw new Exception("There are no users registered at this point");
+        }
         return this.usersList;
     }
 // ------------------------ "if username/user exists" methods ---------------------------
     public boolean nameInMap(String userName)
     {
         // if username key in map, return true - else return false
+        userName = userName.trim().toLowerCase(); 
+
         if (usersList.containsKey(userName))
         {
             return true;
@@ -129,10 +164,13 @@ public class userMap {      // *** only going to create ONE instance, use across
     public void removeUser(String userName)
     {
         // if username mapped to user obj (is in map), remove entry <str, user> from map
+        // exception thrown when no user is mapped to given username
+        userName = userName.trim().toLowerCase(); 
+
         if (nameInMap(userName))
         {
             usersList.remove(userName);
         }
-        else {System.out.println("No user associated with that username");}
+        else {throw new Exception("No user associated with that username");}
     }
 }

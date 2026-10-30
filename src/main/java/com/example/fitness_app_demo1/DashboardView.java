@@ -12,6 +12,7 @@ Date        Name        Edits
  */
 
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -35,6 +36,7 @@ public class DashboardView {
 
     //Nodes that needs a handler or controller may need reference to
     SplitPane splitPane = new SplitPane();            //Profile | logs
+    SplitPane vert = new SplitPane();                   //(Profile | logs) / Visual data
 
     //LeftBox - profile info
     Label profile;    //Hold profile info
@@ -42,12 +44,17 @@ public class DashboardView {
     //RightBox - logs
     ListView<DailyLog> list;            //Listview to view logs
 
+    //Lower - vert splitpane
+    StackPane lowBox;
+    Label temp;
+
 
 
 //----------------Constructor-------------------------------------------------
     public DashboardView(Controller c) {
         splitPane.setDividerPositions(0.4);         // 40/60 split
-         root.setCenter(splitPane);                 //Set splitpane as center of the borderpane
+        vert.setDividerPositions(0.5);
+        root.setCenter(vert);                 //Set vertical splitpane as center of the borderpane
         buildTopBar();          //Create top and center panes on UI
         buildCenterPane();
 
@@ -66,6 +73,9 @@ public class DashboardView {
 
     //Right box of splitpane
     public ListView<DailyLog> getListView() { return this.list;}
+
+    //Lower - ver splitpane
+    public StackPane getLowBox() {return lowBox; }
 
 
     //Create topbar - Profile: "username"       Logout
@@ -142,6 +152,26 @@ public class DashboardView {
 
         splitPane.getItems().addAll(leftBox, rightBox);       //Add left and right box to splitpane
         splitPane.setStyle("-fx-background-color: #f1eeee;");
+
+        //Vertical split pane to placer user|log / visual data----------------
+        vert.setOrientation(Orientation.VERTICAL);      //Set orientation - verticle
+
+        //Hbox in the lower part of the vertical splitpane
+        lowBox = new StackPane();
+
+        //*****************************Temp Nodes***************************************************
+
+        temp = new Label("Visual Data Here......");      //***************TEMP LABEL
+        temp.setStyle("-fx-font-size: 80;" + "-fx-font-family: 'Segoe UI', 'Arial';" +
+                        "-fx-font-weight: 800;" + "-fx-text-fill: blue;");
+
+        lowBox.getChildren().add(temp);         //Add tempt label
+
+        vert.getItems().addAll(splitPane,lowBox);      //Add top splitpane and bottom pane to stackpane
+
+
+        //*****************************Temp Nodes***************************************************
+
 
     }
 

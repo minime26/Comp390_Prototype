@@ -8,7 +8,7 @@ Date        Name        Edits
 10/26       Mo          Added accessors and mutators
 
  */
-
+/*
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -59,7 +59,7 @@ public class UserManager {
         if (username == null)
             throw new IllegalArgumentException("Username cannot be null.");
         if(!isCurrentUser(username))
-            throw new IllegalArgumentException("Username does not exist.")
+            throw new IllegalArgumentException("Username does not exist.");
         return userMap.getUser(username);       //Return user
     }
 
@@ -109,6 +109,10 @@ public class UserManager {
 
     public boolean addLog(String user, DailyLog log) {
 
+
     }
 
 }
+
+
+ */

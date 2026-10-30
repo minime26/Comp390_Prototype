@@ -32,8 +32,8 @@ public class Main extends Application {
         stage.setTitle("Fitness Tracker");
 
         //Create new UserManager object and pass to Controller
-        UserManager manager = new UserManager();
-        Controller mainController = new Controller(stage, manager );       //Create new app object, passing in the stage
+  //      UserManager manager = new UserManager();
+        Controller mainController = new Controller(stage);       //Create new app object, passing in the stage
 
         stage.show();
     }

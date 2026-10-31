@@ -12,7 +12,11 @@ Date        Name        Edits
  */
 
 
-
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class Calculator {
 
@@ -73,6 +77,7 @@ public final class Calculator {
 
 //-------------------Helper Methods-----------------------------------------------------------------------------
 
+
     //Estimate MET based on activity
     public static double getMet(DailyLog.Activity activity) {
         double met = 0;
@@ -113,6 +118,49 @@ public final class Calculator {
         }
         //cals burned from steps only
         return calcCalsBurned(log.getSteps(), log.getWeight());
+    }
+
+    //-----Return localdate using ints or strings
+    public static LocalDate toLocalDate(int mo, int dd, int yyyy) {
+        LocalDate date = LocalDate.of(yyyy, mo, dd);
+        return date;
+    }
+    public static LocalDate toLocalDate(String mo, String dd, String yyyy) {
+        int m = Integer.parseInt(mo.trim());
+        int d = Integer.parseInt(dd.trim());
+        int y = Integer.parseInt(yyyy.trim());
+        String sDate = String.format("%02d/%02d/%04d",m, d, y);
+        return toLocalDate(m, d, y);
+
+    }
+
+    //Return difference between 2 LocalDate
+    public static int dateDiff(LocalDate start, LocalDate end) {
+        if (start == null || end == null)
+            throw new IllegalArgumentException("Dates cannot be null.");
+
+        int diff = (int) ChronoUnit.DAYS.between(start, end);    //get # of days between data end - date start
+        return diff;
+    }
+
+    //------------Graphing utilities----------------------
+
+
+    public static List<DataPoint> getWeightPoints(User user) {
+        List<DataPoint> points = new ArrayList<>();
+        points.add(new DataPoint(1, user.getStartWeight()));     //starting weights as first point (day 1, startWeight)
+
+        if(user.getLogs().isEmpty())        //If no logs for user, return first point
+            return points;
+
+        for (DailyLog i : user.getLogs()) {
+            int x = dateDiff(user.getRegDate(), i.getDate()) + 1;   //day of log relative to registration date
+            double y = i.getWeight();                           //Weight on that date
+            points.add(new DataPoint(x, y));                    //Add to points
+        }
+
+        return points;
+
     }
 
 

@@ -8,7 +8,7 @@ Date        Name        Edits
 10/24       Mo          Adjusted switchTo methods to return an object of the view
                         Added instance fields to set up triggers for login/DB
 10/25       Mo          Added listers/triggers for logout and to retain focus on root pane when user clicks away.
-
+10/25       Mo          Added second constructor to accept a UserManager
 
  */
 
@@ -17,25 +17,32 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class Controller {
 
     //Reference to different screens
-    LoginView loginView;
-    DashboardView dbView;
+  //  private final UserManager manager;
+
+    private LoginView loginView;
+    private DashboardView dbView;
+
 
     //Attributes to determine active view/user
-    Stage stage;                    //Main stage
-    Scene scene;                    //Scene to add to
-    User user;                      //Current user;
+    private Stage stage;                    //Main stage
+    private Scene scene;                    //Scene to add to
+    private User user;                      //Current user;
 
     //Fields - Dashboard
-    ObservableList<DailyLog> obLogs = FXCollections.observableArrayList();
-
+    private ObservableList<DailyLog> obLogs = FXCollections.observableArrayList();
+    private LineChart<Number, Number> chart;
 
     //Constructor - accepts the main stage and creates a loginScene
     public Controller (Stage stage) {
@@ -45,8 +52,21 @@ public class Controller {
         stage.setScene(scene);                                      //Sets scene to stage
         loginListeners(loginView);                   //Attach listeners/triggers
         Platform.runLater(() -> loginView.getRootNode().requestFocus());    //Retain focus on root pane
+    //    manager = new UserManager();
+    }
+/*
+    //Constructor - accepts the main stage and manager
+    public Controller (Stage stage, UserManager m) {
+
+        loginView = new LoginView(this);           //Create a new Login view on start
+        scene = new Scene(loginView.getRootNode(),1000,800);        //Add root node to Scene
+        stage.setScene(scene);                                      //Sets scene to stage
+        loginListeners(loginView);                   //Attach listeners/triggers
+        Platform.runLater(() -> loginView.getRootNode().requestFocus());    //Retain focus on root pane
+        this.manager = m;
     }
 
+*/
 //-----------Login view listeners---------------------------
 //-----Login Nodes-----------------------------------------------------------
 /*      Label username: TextField unameField
@@ -77,22 +97,10 @@ public class Controller {
         });
 
         view.getRootNode().setOnMouseClicked( e -> {
-            loginView.getRootNode().requestFocus();
+            view.getRootNode().requestFocus();
         });
 
 
-    }
-
-    //------Dashboard Listeners--------------------
-    public void dbListeners() {
-        //Configure logout button
-        dbView.getLogoutTb().setOnAction(e -> {
-            logOut();           //Reset DB and user reference, switch to login view
-        });
-
-        dbView.getRootNode().setOnMouseClicked( e -> {
-            dbView.getRootNode().requestFocus();
-        });
     }
 
 
@@ -105,6 +113,7 @@ public class Controller {
         dbView.getProfileLl().setText(user.toString());     //Load left box with user data
         dbView.getUsernameTl().setText(user.getUserName());  //Display username in top left
         scene.setRoot(dbView.getRootNode());                //set Scene to dashboard view
+        loadChart();                                        //load chart based on user data
         dbListeners();                                      //Set up listeners/triggers
         Platform.runLater(() -> dbView.getRootNode().requestFocus());    //Retain focus on root pane
     }
@@ -131,6 +140,24 @@ public class Controller {
 //-----------Helper Methods----------------------------------------------------
 
     //Dashboard
+
+
+    //------Dashboard Listeners--------------------
+    public void dbListeners() {
+        //Configure logout button
+        dbView.getLogoutTb().setOnAction(e -> {
+            logOut();           //Reset DB and user reference, switch to login view
+        });
+
+        dbView.getRootNode().setOnMouseClicked( e -> {
+            dbView.getRootNode().requestFocus();
+        });
+
+
+    }
+
+    //--------------------------------------------------------------------------
+
     public void setUIlogs() {       //Updates ObserveableList with current user logs
         obLogs.setAll(user.getLogs());                  //Arraylist -> ObservableArrayList
     }
@@ -156,6 +183,36 @@ public class Controller {
         dbView = null;                  //Reset DB
     }
 
+    public void loadChart() {       //load chart on the bottom of vert splitpane in dashboard
+        if (user == null)
+            throw new IllegalArgumentException("User cannot be null.");
+
+        if (chart == null) {            //create chart on first load
+            NumberAxis xA = new NumberAxis();       //labels for the axis
+            xA.setLabel("Day");
+            NumberAxis yA = new NumberAxis();
+            yA.setLabel("Weight (lbs)");
+            chart = new LineChart<>(xA, yA);        //create new line chart
+        }
+        updateChart();          //load chart
+        dbView.getLowBox().getChildren().add(chart);        //add chart to the lower part of the vert splitpane
+    }
+
+    public void updateChart() {
+        if (chart == null) return;
+
+        chart.getData().clear();        //Clear previous data
+        List<DataPoint> points = Calculator.getWeightPoints(user);      //get user data points
+
+        //build new series
+        XYChart.Series<Number, Number> weightSeries = new XYChart.Series<>();       //create new series
+        weightSeries.setName("Weight Progress");
+
+        for (DataPoint p : points) {        //get data point
+            weightSeries.getData().add(new XYChart.Data<>(p.x(), p.y()));   //create new XYChart.Data(p.x, p.y) and add to series
+        }
+        chart.getData().add(weightSeries);      //add series to chart
+    }
 
 
 

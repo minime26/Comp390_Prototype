@@ -1,6 +1,6 @@
 Date    Comments
 ====    =============================
-10/19
+10/25   Yet to add edit/add log capability.
 
 
 
@@ -35,3 +35,30 @@ Reg page:
 Use gridpane for the form
 wrap it in a scrollpane to allow scrolling
 set scrollpane to fit to width
+
+======================================
+
+Class: UserManager              //Manages user operation and intermediary between app and file I/O
+
+//------Attributes
+UserMap userMap = new UserMap();          //Map to hold <key=username, value=User_object>
+
+//------Methods
+isCurrentUser(String username): boolean        //Returns true if user exists
+isCurrentUser(User user): boolean
+isPassMatch(String enteredPass, User): boolean  //Checks entered vs stored
+authenticate(String username, String pass): User    //Returns user if authenticated
+
+getUser(String username): User          //Returns the user object mapped to the username
+getAllUsers(): ArrayList<User>          //Return all users
+getLogs(user, LocalDate): ArrayList<DailyLog>  /Get logs for that specific date
+getLogs(user): ArrayList<DailyLog>          //Get all logs for given user
+
+addUser(User user): boolean                //Add a new user to the map
+addUser(String username): boolean
+addLog(User, DailyLog): boolean             //Add a log for user
+
+deleteUser(String username): boolean       //Deletes user mapped to the username
+deleteUser(User user): boolean             //Deletes the user from the map
+addLogToUser(User user, DailyLog log): void
+

@@ -7,6 +7,8 @@ Date        Name        Edits
 10/21       Mo          Created class
 10/24       Mo          Added basic UI additions to show User data/logs
 10/25       Mo          Cosmetic adjustments to UI
+10/30       Mo          Add line graph to the bottom of the dashboard
+10/31       Mo          Add fields to create a new log
 
 
  */

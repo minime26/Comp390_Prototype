@@ -103,18 +103,6 @@ public class Controller {
 
     }
 
-    //------Dashboard Listeners--------------------
-    public void dbListeners() {
-        //Configure logout button
-        dbView.getLogoutTb().setOnAction(e -> {
-            logOut();           //Reset DB and user reference, switch to login view
-        });
-
-        dbView.getRootNode().setOnMouseClicked( e -> {
-            dbView.getRootNode().requestFocus();
-        });
-    }
-
 
 
 //-----------Switch views---------------------------
@@ -152,6 +140,24 @@ public class Controller {
 //-----------Helper Methods----------------------------------------------------
 
     //Dashboard
+
+
+    //------Dashboard Listeners--------------------
+    public void dbListeners() {
+        //Configure logout button
+        dbView.getLogoutTb().setOnAction(e -> {
+            logOut();           //Reset DB and user reference, switch to login view
+        });
+
+        dbView.getRootNode().setOnMouseClicked( e -> {
+            dbView.getRootNode().requestFocus();
+        });
+
+
+    }
+
+    //--------------------------------------------------------------------------
+
     public void setUIlogs() {       //Updates ObserveableList with current user logs
         obLogs.setAll(user.getLogs());                  //Arraylist -> ObservableArrayList
     }
@@ -188,7 +194,8 @@ public class Controller {
             yA.setLabel("Weight (lbs)");
             chart = new LineChart<>(xA, yA);        //create new line chart
         }
-        updateChart();
+        updateChart();          //load chart
+        dbView.getLowBox().getChildren().add(chart);        //add chart to the lower part of the vert splitpane
     }
 
     public void updateChart() {

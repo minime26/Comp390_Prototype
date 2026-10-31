@@ -14,14 +14,14 @@ Date        Name        Edits
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SplitPane;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
+import javafx.util.StringConverter;
+
+import java.time.LocalDate;
 
 public class DashboardView {
 
@@ -43,10 +43,20 @@ public class DashboardView {
 
     //RightBox - logs
     ListView<DailyLog> list;            //Listview to view logs
+                //add log
+    DatePicker datePicker;
+    TextField weight;
+    TextField steps;
+    TextField calIntake;
+        //workout (optional)
+    ComboBox<DailyLog.Activity> activity;
+    TextField dur;
+    Button addLog;      //add log button
+
 
     //Lower - vert splitpane
     StackPane lowBox;
-    Label temp;
+//    Label temp;                   Used for testing
 
 
 
@@ -138,15 +148,53 @@ public class DashboardView {
                 "-fx-border-radius: 15;" + "-fx-background-radius: 15;" + "-fx-padding: 5;");
         HBox rightSplitTop = new HBox();
         leftSplitTop.setMaxWidth(Double.MAX_VALUE);
-        rightSplitTop.setStyle("-fx-padding: 0 0 5 0;" + "-fx-background-color: #c3b7b7;" + "-fx-alignment: center");
+        rightSplitTop.setStyle("-fx-padding: 0 0 1 0;" + "-fx-background-color: #c3b7b7;" + "-fx-alignment: center");
         rightSplitTop.getChildren().add(logTitle);           //Add log title to hbox
 
+        //Add log option----------
+        HBox addLogView = new HBox(5);
+        //create date picker
+        datePicker = new DatePicker();
+        datePicker.setEditable(false);                  //Prevent user from editing the text field of the date picker
 
-        //Add ListView to hold logs
+        datePicker.setConverter(new StringConverter<LocalDate>() {      //convert date to for dd/MM/yy
+            @Override
+            public String toString(LocalDate date) {
+                if (date != null)
+                    return Elements.formatter.format(date);
+                return  "";
+            }
+            @Override
+            public LocalDate fromString(String string) {            //Can be ignored since textbox will be disabled
+                return null;
+            }
+        });
+        datePicker.setValue(LocalDate.now());           //show today's date by default
+        datePicker.getEditor().setPrefColumnCount(8);
+        //create textfields to get log info
+        weight = Elements.createTextField("lbs", 5);
+        steps = Elements.createTextField("Steps", 6);
+        calIntake = Elements.createTextField("Calories", 6);
+        activity = new ComboBox<>();        //drop down for workouts
+        activity.setPromptText("Activity");
+        activity.getItems().addAll(DailyLog.Activity.values()); //Load workout options
+        dur = Elements.createTextField("mins", 5);
+
+        Region spacer = new Region();               //create spacer to separate add log button
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        addLog = Elements.createButton("Add Log");  //create add log button
+        addLog.setStyle("-fx-padding: 3 5 3 5");
+        //add all to HBox
+        addLogView.getChildren().addAll(datePicker, weight, steps, calIntake, activity,
+                                                dur, spacer, addLog);       //---------------
+
+        //Add ListView to hold logs--------------
         list = new ListView<>();        //Instantiate listview
         list.setStyle("-fx-font-size: 14;" + "-fx-font-family: 'Segoe UI', 'Arial';" +
                 "-fx-font-weight: normal;");
-        rightBox.getChildren().addAll(rightSplitTop, list);      //Add logTitle and listview to right box
+
+        rightBox.getChildren().addAll(rightSplitTop, addLogView, list);      //Add logTitle, addlogView, and listview to right box
         list.setMaxHeight(Double.MAX_VALUE);
         VBox.setVgrow(list, Priority.ALWAYS);       //Fill vertically
 
@@ -158,18 +206,18 @@ public class DashboardView {
 
         //Hbox in the lower part of the vertical splitpane
         lowBox = new StackPane();
+        vert.getItems().addAll(splitPane, lowBox);  //Add top splitpane and bottom pane to stackpane
 
         //*****************************Temp Nodes***************************************************
-
+/*
         temp = new Label("Visual Data Here......");      //***************TEMP LABEL
         temp.setStyle("-fx-font-size: 80;" + "-fx-font-family: 'Segoe UI', 'Arial';" +
                         "-fx-font-weight: 800;" + "-fx-text-fill: blue;");
 
         lowBox.getChildren().add(temp);         //Add tempt label
 
-        vert.getItems().addAll(splitPane,lowBox);      //Add top splitpane and bottom pane to stackpane
 
-
+*/
         //*****************************Temp Nodes***************************************************
 
 

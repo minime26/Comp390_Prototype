@@ -167,8 +167,10 @@ public class User {
 
     public void addLog(DailyLog log) {
         if(log == null)
-            throw new IllegalArgumentException("Nothing to add.");
-
+            throw new IllegalArgumentException("Log cannot be null.");
+        if (!this.equals(log.getUser())) {
+            throw new IllegalArgumentException("The log does not belong in this profile.");
+        }
         this.logs.add(log);                             //Append the log list
         Collections.sort(this.logs);                    //sort by date
         setCurrWeight(logs.getLast().getWeight());      //Update current_weight the most recent log
@@ -191,6 +193,13 @@ public class User {
         return removed;                                     //Return false if no log found for the date.
     }
 
+
+    //Override equals method to compare 2 users
+    public boolean equals(Object o) {
+        if (this == o) return true;     //Check for reference
+        if (!(o instanceof User)) return false;
+        return this.userName.trim().equalsIgnoreCase(((User) o).getUserName().trim());  //Check usernames
+    }
 
     //toString method
     public String toString() {          //String representation of a user

@@ -18,7 +18,16 @@ import java.time.format.DateTimeFormatter;
 
 public class DailyLog implements Comparable<DailyLog> {
 
-    public enum Activity {CARDIO, CYCLING, WEIGHTS}
+    public enum Activity {
+        CARDIO("Cardio"), CYCLING("Cycling"), WEIGHTS("Weights");
+        public final String wo;
+
+        Activity(String wo) { this.wo = wo;}
+
+        public String toString() {
+            return wo;
+        }
+    }
     //---------------Attributes of a log--------------------
     private final User user;
     private final int logId;
@@ -98,9 +107,11 @@ public class DailyLog implements Comparable<DailyLog> {
         this.bmi = bmi;
     }
 
+
 //------------------Getters------------------------------------------------------------------------
 
     public User getUser() {return user; }
+    public int getLogId() {return this.logId; }
     public LocalDate getDate() {return date; }
 
     public double getWeight() {return weight; }

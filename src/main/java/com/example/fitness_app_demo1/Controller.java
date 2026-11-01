@@ -8,7 +8,7 @@ Date        Name        Edits
 10/24       Mo          Adjusted switchTo methods to return an object of the view
                         Added instance fields to set up triggers for login/DB
 10/25       Mo          Added listers/triggers for logout and to retain focus on root pane when user clicks away.
-
+10/25       Mo          Added second constructor to accept a UserManager
 
  */
 
@@ -17,25 +17,33 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class Controller {
 
     //Reference to different screens
-    LoginView loginView;
-    DashboardView dbView;
+  //  private final UserManager manager;
+
+    private LoginView loginView;
+    private DashboardView dbView;
+    private Registration regView;
+
 
     //Attributes to determine active view/user
-    Stage stage;                    //Main stage
-    Scene scene;                    //Scene to add to
-    User user;                      //Current user;
+    private Stage stage;                    //Main stage
+    private Scene scene;                    //Scene to add to
+    private User user;                      //Current user;
 
     //Fields - Dashboard
-    ObservableList<DailyLog> obLogs = FXCollections.observableArrayList();
-
+    private ObservableList<DailyLog> obLogs = FXCollections.observableArrayList();
+    private LineChart<Number, Number> chart;
 
     //Constructor - accepts the main stage and creates a loginScene
     public Controller (Stage stage) {
@@ -45,8 +53,21 @@ public class Controller {
         stage.setScene(scene);                                      //Sets scene to stage
         loginListeners(loginView);                   //Attach listeners/triggers
         Platform.runLater(() -> loginView.getRootNode().requestFocus());    //Retain focus on root pane
+    //    manager = new UserManager();
+    }
+/*
+    //Constructor - accepts the main stage and manager
+    public Controller (Stage stage, UserManager m) {
+
+        loginView = new LoginView(this);           //Create a new Login view on start
+        scene = new Scene(loginView.getRootNode(),1000,800);        //Add root node to Scene
+        stage.setScene(scene);                                      //Sets scene to stage
+        loginListeners(loginView);                   //Attach listeners/triggers
+        Platform.runLater(() -> loginView.getRootNode().requestFocus());    //Retain focus on root pane
+        this.manager = m;
     }
 
+*/
 //-----------Login view listeners---------------------------
 //-----Login Nodes-----------------------------------------------------------
 /*      Label username: TextField unameField
@@ -55,11 +76,12 @@ public class Controller {
 */
     public void loginListeners(LoginView view) {
         //On reg-click -> Registration page
-        /*
         view.regB.setOnAction(e -> {
             //Switch to a new registration page
+            switchToRegistration();       //create registration form and show
+
         } );
-        */
+
 
         //On login-click -> validate username/password and view DB
         view.loginB.setOnAction(e -> {
@@ -77,22 +99,10 @@ public class Controller {
         });
 
         view.getRootNode().setOnMouseClicked( e -> {
-            loginView.getRootNode().requestFocus();
+            view.getRootNode().requestFocus();
         });
 
 
-    }
-
-    //------Dashboard Listeners--------------------
-    public void dbListeners() {
-        //Configure logout button
-        dbView.getLogoutTb().setOnAction(e -> {
-            logOut();           //Reset DB and user reference, switch to login view
-        });
-
-        dbView.getRootNode().setOnMouseClicked( e -> {
-            dbView.getRootNode().requestFocus();
-        });
     }
 
 
@@ -105,6 +115,7 @@ public class Controller {
         dbView.getProfileLl().setText(user.toString());     //Load left box with user data
         dbView.getUsernameTl().setText(user.getUserName());  //Display username in top left
         scene.setRoot(dbView.getRootNode());                //set Scene to dashboard view
+        loadChart();                                        //load chart based on user data
         dbListeners();                                      //Set up listeners/triggers
         Platform.runLater(() -> dbView.getRootNode().requestFocus());    //Retain focus on root pane
     }
@@ -114,6 +125,13 @@ public class Controller {
         scene.setRoot(loginView.getRootNode());
         loginListeners(loginView);                   //Attach listeners/triggers
         Platform.runLater(() -> loginView.getRootNode().requestFocus());    //Retain focus on root pane
+    }
+
+    public void switchToRegistration() {
+        regView = new Registration();       //Create new reg view
+        scene.setRoot(regView.getRootNode());
+        //regListeners()....
+        Platform.runLater(() -> regView.getRootNode().requestFocus());  //Retain focus on root pane
     }
 
 
@@ -131,6 +149,35 @@ public class Controller {
 //-----------Helper Methods----------------------------------------------------
 
     //Dashboard
+
+
+    //------Dashboard Listeners--------------------
+    public void dbListeners() {
+        //Configure logout button
+        dbView.getLogoutTb().setOnAction(e -> {
+            logOut();           //Reset DB and user reference, switch to login view
+        });
+
+        dbView.getRootNode().setOnMouseClicked( e -> {
+            dbView.getRootNode().requestFocus();
+        });
+
+        //on add log click...
+        dbView.getAddLog().setOnAction(e -> {
+            DailyLog newLog = addLog();
+            if (newLog == null) return;     //Check for errors
+
+            user.addLog(newLog);        //add to user
+            clearAddLog();          //clear previous log input
+
+            updateChart();          //update chart and load fresh logs
+            updateLogs();
+        });
+
+    }
+
+    //--------------------------------------------------------------------------
+
     public void setUIlogs() {       //Updates ObserveableList with current user logs
         obLogs.setAll(user.getLogs());                  //Arraylist -> ObservableArrayList
     }
@@ -156,6 +203,121 @@ public class Controller {
         dbView = null;                  //Reset DB
     }
 
+    public void loadChart() {       //load chart on the bottom of vert splitpane in dashboard
+        if (user == null)
+            throw new IllegalArgumentException("User cannot be null.");
+
+        if (chart == null) {            //create chart on first load
+            NumberAxis xA = new NumberAxis();       //labels for the axis
+            xA.setLabel("Day");
+            NumberAxis yA = new NumberAxis();
+            yA.setLabel("Weight (lbs)");
+            chart = new LineChart<>(xA, yA);        //create new line chart
+        }
+        updateChart();          //load chart
+        dbView.getLowBox().getChildren().add(chart);        //add chart to the lower part of the vert splitpane
+    }
+
+    public void updateChart() {
+        if (chart == null) return;
+
+        chart.getData().clear();        //Clear previous data
+        List<DataPoint> points = Calculator.getWeightPoints(user);      //get user data points
+
+        //build new series
+        XYChart.Series<Number, Number> weightSeries = new XYChart.Series<>();       //create new series
+        weightSeries.setName("Weight Progress");
+
+        for (DataPoint p : points) {        //get data point
+            weightSeries.getData().add(new XYChart.Data<>(p.x(), p.y()));   //create new XYChart.Data(p.x, p.y) and add to series
+        }
+        chart.getData().add(weightSeries);      //add series to chart
+    }
+
+
+    //return a log after validating user input
+    public DailyLog addLog() {
+        LocalDate date = dbView.getLogDatePicker().getValue();
+        if (Calculator.dateDiff(user.getRegDate(), date) < 0) {
+            Elements.applyErStyle(dbView.getLogDatePicker());      //highlight red
+            Elements.createErrorAlert("Date cannot be past the registration date.");
+            return null;
+        }
+        Elements.clearErStyle(dbView.getLogDatePicker());       //clear error style
+
+        double weight;
+        try {       //get weight
+            weight = Double.parseDouble(dbView.getLogWeight().getText());
+        } catch (NumberFormatException e) {
+            Elements.applyErStyle(dbView.getLogWeight());
+            Elements.createErrorAlert("Weight must be a valid number.");
+            return null;
+        }
+        Elements.clearErStyle(dbView.getLogWeight());
+
+        int steps;
+        try {       //get steps
+            steps = Integer.parseInt(dbView.getLogSteps().getText());
+        } catch (NumberFormatException e) {
+            Elements.applyErStyle(dbView.getLogSteps());
+            Elements.createErrorAlert("Steps must be a valid whole number.");
+            return null;
+        }
+        Elements.clearErStyle(dbView.getLogSteps());
+
+        int cals;
+        try {       //get calorie consumed
+            cals = Integer.parseInt(dbView.getLogCals().getText());
+        } catch (NumberFormatException e) {
+            Elements.applyErStyle(dbView.getLogCals());
+            Elements.createErrorAlert("Calories must be a valid whole number.");
+            return null;
+        }
+        Elements.clearErStyle(dbView.getLogCals());
+
+        int dur = 0;
+        DailyLog.Activity activity;
+
+        if (dbView.getLogActivity().getValue() != null) {       //check for activity input
+            if (dbView.getLogDuration().getText().isBlank() ||
+                    !dbView.getLogDuration().getText().matches("^[1-9]\\d*$")) {
+                Elements.applyErStyle(dbView.getLogDuration());
+                Elements.createErrorAlert("Duration must be a positive number when an activity is selected.");
+                return null;
+            } else {        //get activity info if no error
+                Elements.clearErStyle(dbView.getLogActivity());
+                Elements.clearErStyle(dbView.getLogDuration());
+                activity= dbView.getLogActivity().getValue();
+                dur = Integer.parseInt(dbView.getLogDuration().getText());
+                return new DailyLog(user, date, weight, steps, cals, activity, dur);    //return log with activity
+            }
+        }
+        return new DailyLog(user, date, weight, steps, cals);       //return log without activity
+    }
+
+
+    //clear add log fields
+    public void clearAddLog() {
+        dbView.getLogDatePicker().setValue(LocalDate.now());
+        dbView.getLogWeight().clear();
+        dbView.getLogSteps().clear();
+        dbView.getLogCals().clear();
+        dbView.getLogDuration().clear();
+
+        dbView.getLogActivity().setValue(null);
+        dbView.getLogActivity().setPromptText("Activity");
+        dbView.getLogActivity().requestLayout();
+
+        //Clear any lingering error styling
+        Elements.clearErStyle(List.of(
+                dbView.getLogDatePicker(),
+                dbView.getLogWeight(),
+                dbView.getLogSteps(),
+                dbView.getLogCals(),
+                dbView.getLogActivity(),
+                dbView.getLogDuration()
+        ));
+    }
 
 
 

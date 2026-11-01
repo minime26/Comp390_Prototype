@@ -21,6 +21,9 @@ import java.util.List;
 public final class Calculator {
 
     private static int logId = 1;
+    //regex to match
+    public static final  String posIntRx = "^[1-9]\\d*$";
+    public static final String posDoubleRgx = "^[1-9]\\d*(?:\\.\\d+)?$";
 
     private Calculator() {}             //Avoid instantiation, Calculator object not needed
 

@@ -136,8 +136,8 @@ public class DashboardView {
 
         HBox leftSplitTop = new HBox(10);
         leftSplitTop.setMaxWidth(Double.MAX_VALUE);
-        leftSplitTop.setStyle("-fx-padding: 0 0 5 0;" + "-fx-background-color: #c3b7b7;" + "-fx-alignment: center");
         leftSplitTop.getChildren().add(lprofile);           //Add account label to hbox
+        leftSplitTop.setStyle("-fx-padding: 0 0 5 0;" + "-fx-background-color: #c3b7b7;" + "-fx-alignment: center");
 
         profile = new Label();        //User info will be loaded into this label
         profile.setStyle("-fx-font-size: 18;" + "-fx-font-family: 'Segoe UI', 'Arial';" +

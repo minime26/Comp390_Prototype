@@ -11,6 +11,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.Region;
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public final class Elements {
@@ -113,5 +115,24 @@ public final class Elements {
             clearErStyle(control);
         }
     }
+
+//Utilites for registration page---------------------------------
+    public static List<Control> createRegLabel(String label, String tf) {
+        Label l = new Label(label);                 //Create label
+        l.setMaxWidth(Double.MAX_VALUE);
+        l.setStyle("-fx-alignment: center-right");
+
+        TextField t = new TextField();              //textfield for input
+        t.setPromptText(tf);
+        t.setStyle("-fx-border-radius: 10;" +"-fx-background-radius: 10;" +
+                                "-fx-pref-column-count: 30;");
+
+        Label errLabel = new Label(" ");        //Potential error field
+        errLabel.setStyle("-fx-text-fill: red");
+
+        return new ArrayList<Control>(Arrays.asList(l, t, errLabel));   //return as list
+    }
+
+
 
 }

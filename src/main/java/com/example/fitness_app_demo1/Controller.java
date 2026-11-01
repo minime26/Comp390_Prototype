@@ -33,6 +33,7 @@ public class Controller {
 
     private LoginView loginView;
     private DashboardView dbView;
+    private Registration regView;
 
 
     //Attributes to determine active view/user
@@ -75,11 +76,12 @@ public class Controller {
 */
     public void loginListeners(LoginView view) {
         //On reg-click -> Registration page
-        /*
         view.regB.setOnAction(e -> {
             //Switch to a new registration page
+            switchToRegistration();       //create registration form and show
+
         } );
-        */
+
 
         //On login-click -> validate username/password and view DB
         view.loginB.setOnAction(e -> {
@@ -123,6 +125,13 @@ public class Controller {
         scene.setRoot(loginView.getRootNode());
         loginListeners(loginView);                   //Attach listeners/triggers
         Platform.runLater(() -> loginView.getRootNode().requestFocus());    //Retain focus on root pane
+    }
+
+    public void switchToRegistration() {
+        regView = new Registration();       //Create new reg view
+        scene.setRoot(regView.getRootNode());
+        //regListeners()....
+        Platform.runLater(() -> regView.getRootNode().requestFocus());  //Retain focus on root pane
     }
 
 
@@ -295,11 +304,9 @@ public class Controller {
         dbView.getLogCals().clear();
         dbView.getLogDuration().clear();
 
-
         dbView.getLogActivity().setValue(null);
         dbView.getLogActivity().setPromptText("Activity");
         dbView.getLogActivity().requestLayout();
-
 
         //Clear any lingering error styling
         Elements.clearErStyle(List.of(

@@ -4,12 +4,21 @@ Date    Comments
 
 
 
+User:
+Notes -
+    Need to create a birthdate field.
+
+Registration:
+Notes -
+    Create combobox for gender selection
+    Please title and scrollpane in a Vbox or borderpane
+
 Main:
 Create UserManager object and pass it to Controller.
 
 
 Controller:
-Note:
+ -
     Update add log validations to get all errors at once
 
 Neeeded Field -

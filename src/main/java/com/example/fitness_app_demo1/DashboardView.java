@@ -85,6 +85,14 @@ public class DashboardView {
 
     //Right box of splitpane
     public ListView<DailyLog> getListView() { return this.list;}
+        //add log elements
+    public DatePicker getLogDatePicker() {return this.datePicker; }
+    public TextField getLogWeight() {return this.weight; }
+    public TextField getLogSteps() {return this.steps; }
+    public TextField getLogCals() {return this.calIntake; }
+    public ComboBox<DailyLog.Activity> getLogActivity() {return this.activity; }
+    public TextField getLogDuration() {return this.dur; }
+    public Button getAddLog() {return this.addLog; }
 
     //Lower - ver splitpane
     public StackPane getLowBox() {return lowBox; }

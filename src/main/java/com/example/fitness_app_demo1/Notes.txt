@@ -9,6 +9,9 @@ Create UserManager object and pass it to Controller.
 
 
 Controller:
+Note:
+    Update add log validations to get all errors at once
+
 Neeeded Field -
     User currUser       //Logged in user
     ObserveableList<DailyLog> obLogs

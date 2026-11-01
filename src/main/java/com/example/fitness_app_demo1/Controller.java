@@ -153,6 +153,17 @@ public class Controller {
             dbView.getRootNode().requestFocus();
         });
 
+        //on add log click...
+        dbView.getAddLog().setOnAction(e -> {
+            DailyLog newLog = addLog();
+            if (newLog == null) return;     //Check for errors
+
+            user.addLog(newLog);        //add to user
+            clearAddLog();          //clear previous log input
+
+            updateChart();          //update chart and load fresh logs
+            updateLogs();
+        });
 
     }
 
@@ -212,6 +223,93 @@ public class Controller {
             weightSeries.getData().add(new XYChart.Data<>(p.x(), p.y()));   //create new XYChart.Data(p.x, p.y) and add to series
         }
         chart.getData().add(weightSeries);      //add series to chart
+    }
+
+
+    //return a log after validating user input
+    public DailyLog addLog() {
+        LocalDate date = dbView.getLogDatePicker().getValue();
+        if (Calculator.dateDiff(user.getRegDate(), date) < 0) {
+            Elements.applyErStyle(dbView.getLogDatePicker());      //highlight red
+            Elements.createErrorAlert("Date cannot be past the registration date.");
+            return null;
+        }
+        Elements.clearErStyle(dbView.getLogDatePicker());       //clear error style
+
+        double weight;
+        try {       //get weight
+            weight = Double.parseDouble(dbView.getLogWeight().getText());
+        } catch (NumberFormatException e) {
+            Elements.applyErStyle(dbView.getLogWeight());
+            Elements.createErrorAlert("Weight must be a valid number.");
+            return null;
+        }
+        Elements.clearErStyle(dbView.getLogWeight());
+
+        int steps;
+        try {       //get steps
+            steps = Integer.parseInt(dbView.getLogSteps().getText());
+        } catch (NumberFormatException e) {
+            Elements.applyErStyle(dbView.getLogSteps());
+            Elements.createErrorAlert("Steps must be a valid whole number.");
+            return null;
+        }
+        Elements.clearErStyle(dbView.getLogSteps());
+
+        int cals;
+        try {       //get calorie consumed
+            cals = Integer.parseInt(dbView.getLogCals().getText());
+        } catch (NumberFormatException e) {
+            Elements.applyErStyle(dbView.getLogCals());
+            Elements.createErrorAlert("Calories must be a valid whole number.");
+            return null;
+        }
+        Elements.clearErStyle(dbView.getLogCals());
+
+        int dur = 0;
+        DailyLog.Activity activity;
+
+        if (dbView.getLogActivity().getValue() != null) {       //check for activity input
+            if (dbView.getLogDuration().getText().isBlank() ||
+                    !dbView.getLogDuration().getText().matches("^[1-9]\\d*$")) {
+                Elements.applyErStyle(dbView.getLogDuration());
+                Elements.createErrorAlert("Duration must be a positive number when an activity is selected.");
+                return null;
+            } else {        //get activity info if no error
+                Elements.clearErStyle(dbView.getLogActivity());
+                Elements.clearErStyle(dbView.getLogDuration());
+                activity= dbView.getLogActivity().getValue();
+                dur = Integer.parseInt(dbView.getLogDuration().getText());
+                return new DailyLog(user, date, weight, steps, cals, activity, dur);    //return log with activity
+            }
+        }
+        return new DailyLog(user, date, weight, steps, cals);       //return log without activity
+    }
+
+
+    //clear add log fields
+    public void clearAddLog() {
+        dbView.getLogDatePicker().setValue(LocalDate.now());
+        dbView.getLogWeight().clear();
+        dbView.getLogSteps().clear();
+        dbView.getLogCals().clear();
+        dbView.getLogDuration().clear();
+
+
+        dbView.getLogActivity().setValue(null);
+        dbView.getLogActivity().setPromptText("Activity");
+        dbView.getLogActivity().requestLayout();
+
+
+        //Clear any lingering error styling
+        Elements.clearErStyle(List.of(
+                dbView.getLogDatePicker(),
+                dbView.getLogWeight(),
+                dbView.getLogSteps(),
+                dbView.getLogCals(),
+                dbView.getLogActivity(),
+                dbView.getLogDuration()
+        ));
     }
 
 

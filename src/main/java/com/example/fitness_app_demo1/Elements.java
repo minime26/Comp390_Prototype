@@ -10,6 +10,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.Region;
 
+import java.text.ListFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -117,12 +118,16 @@ public final class Elements {
     }
 
 //Utilites for registration page---------------------------------
-    public static List<Control> createRegLabel(String label, String tf) {
+
+   public static List<Control> createRegLabel(String label, String tf) {
+    return createRegLabel(label, tf, false);
+    }
+        public static List<Control> createRegLabel(String label, String tf, boolean password) {
         Label l = new Label(label);                 //Create label
         l.setMaxWidth(Double.MAX_VALUE);
         l.setStyle("-fx-alignment: center-right");
 
-        TextField t = new TextField();              //textfield for input
+        TextField t = password ? new PasswordField() : new TextField();              //textfield for input
         t.setPromptText(tf);
         t.setStyle("-fx-border-radius: 10;" +"-fx-background-radius: 10;" +
                                 "-fx-pref-column-count: 30;");

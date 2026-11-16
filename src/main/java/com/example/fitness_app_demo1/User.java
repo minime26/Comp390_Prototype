@@ -60,57 +60,89 @@ public class User {
 
     public void setPassword(String p) {
         //Restrict password to letters, #s and certain special chars
-        if (p == null || !p.matches("[a-zA-Z0-9.!@#$*]{8,20}"))
+        /*
+         if (p == null || !p.matches("[a-zA-Z0-9.!@#$*]{8,20}"))
             throw new IllegalArgumentException("Invalid password format.");
+         */
+        Validation.checkPassword(p);
+       
         this.pass = p;
 
     }
     public void setGender(String gender) {        //Gender name
+        /*
         if(gender == null || !List.of("male", "female", "prefer not to answer").contains(gender.toLowerCase().trim()))
             throw new IllegalArgumentException("Invalid gender option.");                       //Throw exception if selection is out of scope.
+         */
+        Validation.checkGender(gender);
+
         this.gender = gender;
     }
 
     public void setLName(String lName) {        //Last name
+       /* 
         if(lName == null || !lName.matches("[a-zA-Z\\-]+"))                                       //Only accept letters and -
             throw new IllegalArgumentException("Invalid last name entry.");
+            */
+        Validation.checkName(lName);
+
         this.lName = lName;
     }
 
     public void setFName(String fName) {        //Last name
+        /* 
         if(fName == null || !fName.matches("[a-zA-Z\\-]+"))
             throw new IllegalArgumentException("Invalid first name entry.");
+        */
+        Validation.checkName(fName);
+
         this.fName = fName;
     }
 
     public void setAge(int age) {
+        /* 
         if (age < 12)
             throw new IllegalArgumentException("Must be at least 12 years old.");
+        */
+        Validation.checkAge(age);
+
         this.age = age;
     }
 
     public void setHeight(double inches) {
+        /* 
         if(inches<36)                           //Implicit floor for height is 3ft
             throw new IllegalArgumentException("Invalid height entry.");
+        */
+        Validation.checkHeight(inches);
         this.height = inches;
     }
 
     public void setStartWeight(double lbs) {
+        /* 
         if(lbs <= 0)                            //Check for 0 or negative entries
             throw new IllegalArgumentException("Weight must be positive.");
+        */
+        Validation.checkWeight(lbs);
         this.startWeight = lbs;
         this.currWeight = lbs;
     }
 
     public void setTargetWeight(double lbs) {
+        /* 
         if(lbs <= 0)                            //Check for 0 or negative entries
             throw new IllegalArgumentException("Weight must be positive.");
+            */
+        Validation.checkWeight(lbs);
         this.targetWeight = lbs;
     }
 
     public void setCurrWeight(double lbs) {
+        /* 
         if(lbs <= 0)                            //Check for 0 or negative entries
             throw new IllegalArgumentException("Weight must be positive.");
+        */
+        Validation.checkWeight(lbs);
         this.currWeight = lbs;
     }
 

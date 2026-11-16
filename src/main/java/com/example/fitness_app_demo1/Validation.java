@@ -9,6 +9,13 @@ public class Validation{
         }
     }
 
+    public static void checkUsername(String username){
+        if(username == null || !username.matches("^[a-zA-Z0-9 _]+")){
+            throw new IllegalArgumentException("Invalid username");
+        }
+    }
+    
+
     public static void checkGender(String gender){
         if(gender == null || !List.of("male", "female", "prefer not to answer").contains(gender.toLowerCase().trim())){
             throw new IllegalArgumentException("Invalid gender option.");

@@ -43,6 +43,7 @@ public class Registration {
     HBox bottomRow = new HBox(10);
     Button submit;
     Button clear;
+    Button back;
 
 
     //constructor
@@ -76,6 +77,11 @@ public class Registration {
         return clear;
 
     }
+
+    public Button getBackButton() {
+        return back;
+    }
+
 
     public List<FormRow> getFormRows() {
         return List.copyOf(formRows);
@@ -113,7 +119,7 @@ public class Registration {
 public void createField (int row, String label, String fieldPrompt) {
     createField(row, label, fieldPrompt, false);
 }
-    
+
     public void createField(int row, String label, String fieldPrompt, boolean password) {
         List<Control> controls = Elements.createRegLabel(label, fieldPrompt, password);
 
@@ -156,11 +162,16 @@ public void createField (int row, String label, String fieldPrompt) {
         submit = new Button("Submit");      //Create submit button
         submit.setStyle("-fx-border-radius: 15;" +"-fx-background-radius: 15;" + "-fx-font-size: 14;" +
                 "-fx-font-family: 'Segoe UI', 'Arial';" + "-fx-font-weight: 600;" + "-fx-padding: 6 12");
+
         clear = new Button("Clear");        //clear button
         clear.setStyle("-fx-border-radius: 15;" +"-fx-background-radius: 15;" + "-fx-font-size: 14;" +
                 "-fx-font-family: 'Segoe UI', 'Arial';" + "-fx-font-weight: 600;" + "-fx-padding: 6 12");
 
-        bottomRow.getChildren().addAll(clear, submit);      //add both buttons to hbox
+        back = new Button("Back");
+        back.setStyle("-fx-border-radius: 15;" +"-fx-background-radius: 15;" + "-fx-font-size: 14;" +
+                "-fx-font-family: 'Segoe UI', 'Arial';" + "-fx-font-weight: 600;" + "-fx-padding: 6 12");
+
+        bottomRow.getChildren().addAll(clear, submit,back);      //add both buttons to hbox
         bottomRow.setAlignment(Pos.CENTER_RIGHT);        //center-left in the third column
         grid.add(bottomRow, 1, row);            //place hbox in column 1 with buttons
         GridPane.setColumnSpan(bottomRow, 2);       //Span hbox col 1 & 2
@@ -178,4 +189,4 @@ public void createField (int row, String label, String fieldPrompt) {
     //     for (int i=0; i < 3 ; i++) {        //add elements to the given row [label: TextField (error)]
     //         grid.add(controls.get(i),i, row);
  //
-}     
+}

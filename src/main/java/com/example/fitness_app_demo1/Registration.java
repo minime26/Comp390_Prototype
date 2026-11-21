@@ -43,6 +43,7 @@ public class Registration {
     HBox bottomRow = new HBox(10);
     Button submit;
     Button clear;
+    Button back;
 
 
     //constructor
@@ -51,7 +52,8 @@ public class Registration {
         grid.setStyle("-fx-border-color: #252525;" + "-fx-border-radius: 10;" +
                 "-fx-background-color: #f1eeee;" + "-fx-background-radius: 10;");
 
-        StackPane center = new StackPane(grid);     //wrap grid in a stackpane to center
+         //wrap grid in a stackpane to center
+         center = new StackPane(grid);
         center.minWidthProperty().bind(root.widthProperty());   //bind grids width/height to root
         center.minHeightProperty().bind(root.heightProperty());
         root.setContent(center);        //add the wrapper to root
@@ -63,6 +65,30 @@ public class Registration {
     //Getters-------------------------
 
     public ScrollPane getRootNode() {return this.root; }    //return root
+
+    public Button getSubmitButton(){
+        return submit;
+
+
+    }
+
+
+    public Button getClearButton () {
+        return clear;
+
+    }
+
+    public Button getBackButton() {
+        return back;
+    }
+
+
+    public List<FormRow> getFormRows() {
+        return List.copyOf(formRows);
+    }
+
+
+
 
 
 
@@ -90,6 +116,21 @@ public class Registration {
         GridPane.setColumnSpan(tbar, 3);        //span across all columns
 
     }
+public void createField (int row, String label, String fieldPrompt) {
+    createField(row, label, fieldPrompt, false);
+}
+
+    public void createField(int row, String label, String fieldPrompt, boolean password) {
+        List<Control> controls = Elements.createRegLabel(label, fieldPrompt, password);
+
+        FormRow currentRow = new FormRow((Label) controls.get (0), (TextField) controls.get (1), (Label) controls.get (2));
+
+        formRows.add(currentRow);
+
+        for (int i = 0; i < controls.size(); i++) {
+            grid.add(controls.get(i), i, row);
+        }
+    }
 
     public void loadForm() {
         int row = 0;
@@ -97,8 +138,8 @@ public class Registration {
         buildTopRow(row);       //build top bar
 
         createField(++row, "Username:", "Enter your username");
-        createField(++row, "Password:", "Enter your password");
-        createField(++row, "Confirm Password:", "Re-enter your password");
+        createField(++row, "Password:", "Enter your password",true);
+        createField(++row, "Confirm Password:", "Re-enter your password",true);
         createField(++row, "First Name:", "Enter your first name");
         createField(++row, "Last Name:", "Enter your last name");
         createField(++row, "Age:", "Enter your age:");
@@ -107,7 +148,7 @@ public class Registration {
         createField(++row, "Weight (lbs):", "Enter your weight");
 
         //optional
-        createField(++row, "Weight Goal (lbs):", "Enter your target weight");
+        createField(++row, "Weight Goal (lbs,optional):", "Enter your target weight");
 
         buildBottomBar(row+1);
 
@@ -121,27 +162,31 @@ public class Registration {
         submit = new Button("Submit");      //Create submit button
         submit.setStyle("-fx-border-radius: 15;" +"-fx-background-radius: 15;" + "-fx-font-size: 14;" +
                 "-fx-font-family: 'Segoe UI', 'Arial';" + "-fx-font-weight: 600;" + "-fx-padding: 6 12");
+
         clear = new Button("Clear");        //clear button
         clear.setStyle("-fx-border-radius: 15;" +"-fx-background-radius: 15;" + "-fx-font-size: 14;" +
                 "-fx-font-family: 'Segoe UI', 'Arial';" + "-fx-font-weight: 600;" + "-fx-padding: 6 12");
 
-        bottomRow.getChildren().addAll(clear, submit);      //add both buttons to hbox
+        back = new Button("Back");
+        back.setStyle("-fx-border-radius: 15;" +"-fx-background-radius: 15;" + "-fx-font-size: 14;" +
+                "-fx-font-family: 'Segoe UI', 'Arial';" + "-fx-font-weight: 600;" + "-fx-padding: 6 12");
+
+        bottomRow.getChildren().addAll(clear, submit,back);      //add both buttons to hbox
         bottomRow.setAlignment(Pos.CENTER_RIGHT);        //center-left in the third column
         grid.add(bottomRow, 1, row);            //place hbox in column 1 with buttons
         GridPane.setColumnSpan(bottomRow, 2);       //Span hbox col 1 & 2
     }
 
     //create row using label prompt and field prompt
-    public void createField(int row, String label, String fieldPrompt) {
-        //get elements for the row
-        List<Control> controls = Elements.createRegLabel(label, fieldPrompt);   //create labels and text field
-        FormRow currentRow = new FormRow(
-                (Label) controls.get(0), (TextField) controls.get(1), (Label) controls.get(2));
+    // public void createField(int row, String label, String fieldPrompt) {
+    //     //get elements for the row
+    //     List<Control> controls = Elements.createRegLabel(label, fieldPrompt);   //create labels and text field
+    //     FormRow currentRow = new FormRow(
+    //             (Label) controls.get(0), (TextField) controls.get(1), (Label) controls.get(2));
 
-        formRows.add(currentRow);       //add row to list
+    //     formRows.add(currentRow);       //add row to list
 
-        for (int i=0; i < 3 ; i++) {        //add elements to the given row [label: TextField (error)]
-            grid.add(controls.get(i),i, row);
-        }
-    }
+    //     for (int i=0; i < 3 ; i++) {        //add elements to the given row [label: TextField (error)]
+    //         grid.add(controls.get(i),i, row);
+ //
 }

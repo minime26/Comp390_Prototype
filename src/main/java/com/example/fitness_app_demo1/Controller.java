@@ -26,6 +26,7 @@ import javafx.stage.Stage;
 import java.time.LocalDate;
 import java.util.List;
 
+
 public class Controller {
 
     //Reference to different screens
@@ -130,9 +131,20 @@ public class Controller {
     public void switchToRegistration() {
         regView = new Registration();       //Create new reg view
         scene.setRoot(regView.getRootNode());
-        //regListeners()....
+        regListeners();
         Platform.runLater(() -> regView.getRootNode().requestFocus());  //Retain focus on root pane
     }
+    public void regListeners() {
+    regView.getBackButton().setOnAction(event -> switchToLogin());
+    regView.getClearButton().setOnAction(event -> {
+        for (Registration.FormRow row : regView.getFormRows()) {
+            row.field().clear();
+            row.erLabel().setText("");
+            Elements.clearErStyle(row.field());
+        }
+    });
+
+}
 
 
 

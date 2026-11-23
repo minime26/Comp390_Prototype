@@ -20,6 +20,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +44,14 @@ public class Registration {
     HBox bottomRow = new HBox(10);
     Button submit;
     Button clear;
+
+    //formfields
+
+
+    TextField username;
+    Label uNameErrLabel;
+
+    TextField password;
 
 
     //constructor
@@ -96,8 +105,10 @@ public class Registration {
 
         buildTopRow(row);       //build top bar
 
-        createField(++row, "Username:", "Enter your username");
-        createField(++row, "Password:", "Enter your password");
+        username = (TextField) createField(++row, "Username:", "Enter your username");
+        uNameErrLabel = formRows.get(row).erLabel();      //ref to errlabel
+
+        password = (TextField) createField(++row, "Password:", "Enter your password");
         createField(++row, "Confirm Password:", "Re-enter your password");
         createField(++row, "First Name:", "Enter your first name");
         createField(++row, "Last Name:", "Enter your last name");
@@ -132,7 +143,7 @@ public class Registration {
     }
 
     //create row using label prompt and field prompt
-    public void createField(int row, String label, String fieldPrompt) {
+    public Control createField(int row, String label, String fieldPrompt) {
         //get elements for the row
         List<Control> controls = Elements.createRegLabel(label, fieldPrompt);   //create labels and text field
         FormRow currentRow = new FormRow(
@@ -142,6 +153,14 @@ public class Registration {
 
         for (int i=0; i < 3 ; i++) {        //add elements to the given row [label: TextField (error)]
             grid.add(controls.get(i),i, row);
+        }
+        return (Control) currentRow.field();
+    }
+
+    public void clearField() {
+        for (FormRow i : formRows) {
+            i.field().clear();
+            i.erLabel().setText("");
         }
     }
 }
